@@ -11,52 +11,63 @@
   <body>
     <div class="root">
       <div id="first">
-        Hello my name is Rachit Khurana, and I'm dsgnrdev ! What are you doing
-        rachit ? No No No. Dsgnrdev is awesome !
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
+        veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+        commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
+        velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
+        occaecat cupidatat non proident, sunt in culpa qui officia deserunt
+        mollit anim id est laborum.
       </div>
 
       <div id="second">
-        Hello my name is Rachit Khurana, and I'm dsgnrdev ! What are you doing
-        rachit ? No No No. Dsgnrdev is awesome !
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
+        veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+        commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
+        velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
+        occaecat cupidatat non proident, sunt in culpa qui officia deserunt
+        mollit anim id est laborum.
       </div>
 
       <div id="third">
-        Hello my name is Rachit Khurana, and I'm dsgnrdev ! What are you doing
-        rachit ? No No No. Dsgnrdev is awesome !
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
+        veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+        commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
+        velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
+        occaecat cupidatat non proident, sunt in culpa qui officia deserunt
+        mollit anim id est laborum.
       </div>
     </div>
     <script src="./js/anime.min.js"></script>
     <script src="./js/app.js"></script>
 
     <script>
-      const words1 = ["rachit", "dsgnrdev"];
-      const words2 = ["awesome", "no"];
-
-      imtanimate({
+      let first = new imtanimate({
         htmlId: "first",
-        words: words1,
+        words: ["commodo"],
         color: ["#000", "#3f3"],
-        animationTrigger: IMTA_TRIGGER.HOVER,
+        animationTrigger: IMTA_TRIGGER.CLICK,
         animationDuration: 200,
       });
 
-      imtanimate({
+      let second = new imtanimate({
         htmlId: "second",
-        words: words2,
+        words: ["lorem", "culpa"],
         color: ["#000", "#f33"],
         animationTrigger: IMTA_TRIGGER.CLICK,
         animationDuration: 200,
       });
 
-      //   imtanimate({
-      //     htmlId: "third",
-      //     color: ["#000", "#33f"],
-      //     animationTrigger: IMTA_TRIGGER.CLICK,
-      //   });
-
-      //   function clickme() {
-      //     console.log("hello");
-      //     first.animate();
+      let third = new imtanimate({
+        htmlId: "third",
+        words: ["dolor", "consectetur"],
+        color: ["#000", "#33f"],
+        animationTrigger: IMTA_TRIGGER.CLICK,
+        animationDuration: 200,
+        scale: 2,
+      });
       //   }
     </script>
   </body>

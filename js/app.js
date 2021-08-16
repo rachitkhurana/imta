@@ -17,7 +17,9 @@ const IMTA_TRIGGER = {
 //     animationTrigger: '',
 //     words: []
 
-async function imtanimate({
+let count = 0;
+
+function imtanimate({
     htmlId = null,
     animationType = IMTA_INSTANCE.REGULAR,
     animationTrigger = null,
@@ -25,16 +27,17 @@ async function imtanimate({
     animateLoop = false,
     animationDuration = null,
     color = null,
-    scale = 1.2,
+    scale = 1.4,
     onComplete = null
 }) {
-
-    console.log(arguments);
 
     if (!htmlId) {
         console.log('imtanimate function | no htmlId provided');
         return;
     }
+
+    count = count + 1;
+    console.log(`${count} time ->> ${htmlId}`);
 
     function localAnimate(onCompleteUser = onComplete, onCompleteLocal = null) {
         animate({
@@ -42,6 +45,7 @@ async function imtanimate({
             animationDuration: animationDuration,
             animateLoop: animateLoop,
             color: color,
+            scale: scale,
             onComplete: () => {
                 if (onCompleteLocal && typeof (onCompleteLocal) == 'function') onCompleteLocal();
                 if (onCompleteUser && typeof (onCompleteUser) == 'function') onCompleteUser();
@@ -116,6 +120,7 @@ function animate({
     animationDuration = 800,
     loop = false,
     color = null,
+    scale = 1.4,
     onComplete = null
 }) {
     if (!htmlId) {
@@ -128,7 +133,7 @@ function animate({
     anime.timeline({ loop: loop || false })
         .add({
             targets: `#${htmlId} .imta-word .imta-letter`,
-            scale: [1, 1.4, 1],
+            scale: [1, scale, 1],
             color: color,
             duration: animationDuration || 800,
             elasticity: 600,

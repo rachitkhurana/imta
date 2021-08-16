@@ -23,6 +23,7 @@ body {
 #first,
 #second,
 #third {
-  font-size: 2em;
-  width: 400px;
+  font-size: 1.5em;
+  line-height: 1.6em;
+  width: 50%;
 }
