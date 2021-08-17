@@ -9,13 +9,8 @@ const IMTA_INSTANCE = {
 //ANIMATION TRIGGER
 const IMTA_TRIGGER = {
     CLICK: 'click',
-    HOVER: 'hover'
+    HOVER: 'mouseover'
 }
-
-// htmlId: null,
-//     animationType: IMTA_INSTANCE.REGULAR,
-//     animationTrigger: '',
-//     words: []
 
 let count = 0;
 
@@ -36,8 +31,7 @@ function imtanimate({
         return;
     }
 
-    count = count + 1;
-    console.log(`${count} time ->> ${htmlId}`);
+    let hoverDisabled = false;
 
     function localAnimate(onCompleteUser = onComplete, onCompleteLocal = null) {
         animate({
@@ -56,13 +50,23 @@ function imtanimate({
     // console.log(arguments);
     const element = document.getElementById(htmlId);
 
+    prepareWordsImtaRegular(element, words);
+
+    generateTrigger(element, animationTrigger, localAnimate, onComplete);
+
+    return {
+        animate: localAnimate
+    };
+}
+
+
+// IMTA Regular prepare words to animate
+function prepareWordsImtaRegular(element, words) {
     element.innerHTML = wordsToSpan(element.textContent);
 
     let wordsToFocus = [];
 
     let wordSpans = document.getElementsByClassName('imta-word');
-
-    let hoverDisabled = false;
 
     if (isEmpty(words)) {
         for (let i = 0; i < wordSpans.length; i++) {
@@ -80,27 +84,22 @@ function imtanimate({
         wordsToFocus[i].style['display'] = 'inline-block';
         wordsToFocus[i].innerHTML = charToSpan(wordsToFocus[i].textContent);
     }
-
-
-    if (animationTrigger == IMTA_TRIGGER.CLICK) {
-        element.addEventListener('click', () => { localAnimate() });
-    } else if (animationTrigger == IMTA_TRIGGER.HOVER) {
-        element.addEventListener('mouseover', () => {
-            if (!hoverDisabled) {
-                hoverDisabled = true;
-                localAnimate(onComplete, () => { hoverDisabled = false })
-            }
-        });
-    }
-
-
-    // localAnimate();
-
-    return {
-        animate: localAnimate
-    };
 }
+// IMTA Regular prepare words to animate end
 
+// Trigger Generation
+function generateTrigger(element, trigger) {
+    if (isEmpty(arguments)) return;
+
+    element.addEventListener(trigger, () => {
+        for (let i = 2; i < arguments.length; i++) {
+            if (arguments[i] && typeof (arguments[i] == 'function')) arguments[i]();
+        }
+    });
+}
+// Trigger Generation end
+
+// Splitting functions
 function wordsToSpan(data) {
     if (!data || typeof (data) != 'string') return;
     // data = data.trimStart().trimEnd();
@@ -112,6 +111,8 @@ function wordsToSpan(data) {
 function charToSpan(data) {
     return data.replace(/\S/g, "<span class='imta-letter' style='display: inline-block'>$&</span>");
 }
+// Splitting functions end
+
 
 
 // animejs function
