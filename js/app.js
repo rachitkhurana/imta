@@ -12,7 +12,8 @@ const IMTA_TRIGGER = {
     HOVER: 'mouseover'
 }
 
-let count = 0;
+const SCALE_REGULAT_IMTA = 1.5;
+const DURATION_REGULAT_IMTA = 800;
 
 function imtanimate({
     htmlId = null,
@@ -22,7 +23,7 @@ function imtanimate({
     animateLoop = false,
     animationDuration = null,
     color = null,
-    scale = 1.4,
+    scale = null,
     onComplete = null
 }) {
 
@@ -109,7 +110,7 @@ function wordsToSpan(data) {
 }
 
 function charToSpan(data) {
-    return data.replace(/\S/g, "<span class='imta-letter' style='display: inline-block'>$&</span>");
+    return data.replace(/\S/g, "<span class='imta-letter' style='display: inline-block; transition: all ease-in-out 0.05s'>$&</span>");
 }
 // Splitting functions end
 
@@ -118,26 +119,29 @@ function charToSpan(data) {
 // animejs function
 function animate({
     htmlId = null,
-    animationDuration = 800,
+    animationDuration = DURATION_REGULAT_IMTA,
     loop = false,
     color = null,
-    scale = 1.4,
+    scale = SCALE_REGULAT_IMTA,
     onComplete = null
 }) {
     if (!htmlId) {
         console.log('animate function | no htmlId provided');
         return;
     }
-
+    if (!scale) scale = SCALE_REGULAT_IMTA;
     if (animationDuration > 1000) animationDuration = 1000;
+
+    console.log(scale);
 
     anime.timeline({ loop: loop || false })
         .add({
             targets: `#${htmlId} .imta-word .imta-letter`,
-            scale: [1, scale, 1],
+            scale: [1, scale, (1 - (scale - 1) / 2), 1],
             color: color,
             duration: animationDuration || 800,
             elasticity: 600,
+            translateX: [0, '25%', 0],
             delay: (el, i) => 45 * (i + 1),
             complete: () => { if (onComplete && typeof (onComplete == 'function')) onComplete() }
         });
