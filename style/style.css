@@ -24,9 +24,7 @@ body {
   align-items: center;
 }
 
-#first,
-#second,
-#third {
+.display-divs {
   font-size: 1.5em;
   line-height: 1.6em;
   width: 50%;
@@ -70,4 +68,14 @@ h3.info:first-child {
 .animate-btn button:active {
   filter: brightness(90%);
   transform: scale(0.95);
+}
+
+@media (max-width: 767px) {
+  h3.info {
+    width: 90%;
+  }
+
+  .display-divs {
+    width: 90%;
+  }
 }
