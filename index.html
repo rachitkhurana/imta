@@ -10,30 +10,8 @@
   </head>
   <body>
     <div class="root">
-      <h3 class="info">Click it</h3>
+      <h3 class="info">WooHoooo !</h3>
       <div id="first">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-        veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-        commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
-        velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
-        occaecat cupidatat non proident, sunt in culpa qui officia deserunt
-        mollit anim id est laborum.
-      </div>
-
-      <h3 class="info">Hover on it</h3>
-      <div id="second">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-        veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-        commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
-        velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
-        occaecat cupidatat non proident, sunt in culpa qui officia deserunt
-        mollit anim id est laborum.
-      </div>
-
-      <h3 class="info">This won't work with any gesture</h3>
-      <div id="third">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
         tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
         veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
@@ -51,35 +29,18 @@
     <script src="./js/app.js"></script>
 
     <script>
-      let first = new imtanimate({
+      let first = new imta({
         htmlId: "first",
-        words: ["commodo"],
-        color: ["#000", "#0a0"],
-        animationTrigger: IMTA_TRIGGER.CLICK,
-        animationDuration: 200,
-      });
-
-      let second = new imtanimate({
-        htmlId: "second",
-        words: ["lorem", "culpa"],
-        color: ["#000", "#f33"],
-        animationTrigger: IMTA_TRIGGER.HOVER,
-        animationDuration: 200,
-      });
-
-      let third = new imtanimate({
-        htmlId: "third",
-        words: ["dolor", "consectetur"],
-        color: ["#000", "#33f"],
-        // animationTrigger: IMTA_TRIGGER.CLICK,
-        animationDuration: 400,
-        scale: 2,
+        words: ["lorem", "tempor", "dolor", "anim", "commodo", "cillum"],
+        anmation: null,
+        duration: null,
+        extras: {
+          color: ["#000", "#f33"],
+        },
       });
 
       function clicked() {
         first.animate();
-        second.animate();
-        third.animate();
       }
     </script>
   </body>

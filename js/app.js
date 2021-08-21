@@ -1,156 +1,159 @@
-// Anime JS should be imported befire this.
+// AnimeJS should be imported before this.
 
-// ANIMATION TYPE
-const IMTA_INSTANCE = {
-    REGULAR: 'reguler',
-    EDITABLE: 'editable'
+
+// ANIMATION TYPE MAP
+const IMTA_ANIMATION = {
+    LETTER_SCALE: 'letter_scale',
+    WORD_SCALE: 'word_scale'
 }
 
-//ANIMATION TRIGGER
-const IMTA_TRIGGER = {
-    CLICK: 'click',
-    HOVER: 'mouseover'
+// PREPRATION FUNCTION MAP acc to animation type
+// keys should be same as the values for IMTA_ANIMATION
+const prepare = {
+    'letter_scale': prepare_letterScale,
+    'word_scale': prepare_wordScale
 }
 
-const SCALE_REGULAT_IMTA = 1.5;
-const DURATION_REGULAT_IMTA = 800;
 
-function imtanimate({
-    htmlId = null,
-    animationType = IMTA_INSTANCE.REGULAR,
-    animationTrigger = null,
-    words = [],
-    animateLoop = false,
-    animationDuration = null,
-    color = null,
-    scale = null,
-    onComplete = null
-}) {
+// ANIMATION FUNCTION MAP acc to animation type
+// keys should be same as the values for IMTA_ANIMATION
+const animate = {
+    'letter_scale': animate_letterScale,
+    'word_scale': animate_wordScale
+}
 
-    if (!htmlId) {
-        console.log('imtanimate function | no htmlId provided');
-        return;
-    }
 
-    let hoverDisabled = false;
+// SOME DEFAULTS
+const DEFAULT_LETTER_SCALE = 1.75;
+const DEFAULT_WORD_SCALE = 1.5;
 
-    function localAnimate(onCompleteUser = onComplete, onCompleteLocal = null) {
-        animate({
-            htmlId: htmlId,
-            animationDuration: animationDuration,
-            animateLoop: animateLoop,
-            color: color,
-            scale: scale,
-            onComplete: () => {
-                if (onCompleteLocal && typeof (onCompleteLocal) == 'function') onCompleteLocal();
-                if (onCompleteUser && typeof (onCompleteUser) == 'function') onCompleteUser();
-            }
-        });
-    }
+const DEFAULT_DURATION = 500;
 
-    // console.log(arguments);
+const IMTA_DEFAULT_EXTRAS = {
+    scale: null,
+    color: null,
+    rotate: null
+}
+
+
+// IMTA function
+function imta({ htmlId, words, animation, duration, extras }) {
+
+    if (!htmlId) return;
+
+    // the default parameter thing wasn't working - i don't know why
+    if (!animation) animation = IMTA_ANIMATION.LETTER_SCALE;
+    if (!duration) duration = DEFAULT_DURATION;
+    if (!words) words = [];
+    if (!extras) extras = IMTA_DEFAULT_EXTRAS;
+
     const element = document.getElementById(htmlId);
 
-    prepareWordsImtaRegular(element, words);
+    if (!element) return;
 
-    generateTrigger(element, animationTrigger, localAnimate, onComplete);
+    // preprationSuccess true is prepration Successful.
+    const preprationSuccess = prepare[animation](element, words) || false;
 
-    return {
-        animate: localAnimate
+    // animate the things now - if prep was success
+    if (preprationSuccess) return {
+        animate: () => animate[animation]({
+            htmlElement: element,
+            scale: extras.scale || DEFAULT_LETTER_SCALE,
+            color: extras.color || null
+        })
     };
+
+    // IMTA end
 }
 
 
-// IMTA Regular prepare words to animate
-function prepareWordsImtaRegular(element, words) {
-    element.innerHTML = wordsToSpan(element.textContent);
+/** PREPARING FUNCTIONS
+ * All preparing functions should --
+ *      * start with "prepare_"
+ *      * return true when successful else false
+ *      * should be present in prepare constant with key name as the animation const value
+ */
+function prepare_letterScale(htmlElement, words) {
+    if (!htmlElement) return;
+    try {
+        htmlElement.innerHTML = splitIntoWords(htmlElement.textContent);
 
-    let wordsToFocus = [];
+        let wordElements = htmlElement.getElementsByClassName('imta-word');
 
-    let wordSpans = document.getElementsByClassName('imta-word');
-
-    if (isEmpty(words)) {
-        for (let i = 0; i < wordSpans.length; i++) {
-            wordsToFocus.push(wordSpans[i]);
-        }
-    } else {
-        for (let i = 0; i < wordSpans.length; i++) {
-            if (words.includes(wordSpans[i].textContent.toString().toLowerCase())) {
-                wordsToFocus.push(wordSpans[i]);
+        if (isEmpty(words)) {
+            for (let i = 0; i < wordElements.length; i++) {
+                wordElements[i].innerHTML = splitIntoLetters(wordElements[i].textContent);
+            }
+        } else {
+            for (let i = 0; i < wordElements.length; i++) {
+                if (words.includes(wordElements[i].textContent.toString().toLowerCase())) {
+                    wordElements[i].innerHTML = splitIntoLetters(wordElements[i].textContent);
+                }
             }
         }
+
+        return true;
+    } catch (error) {
+        console.log(error);
+        return false;
     }
-
-    for (let i = 0; i < wordsToFocus.length; i++) {
-        wordsToFocus[i].style['display'] = 'inline-block';
-        wordsToFocus[i].innerHTML = charToSpan(wordsToFocus[i].textContent);
-    }
-}
-// IMTA Regular prepare words to animate end
-
-// Trigger Generation
-function generateTrigger(element, trigger) {
-    if (isEmpty(arguments)) return;
-
-    element.addEventListener(trigger, () => {
-        for (let i = 2; i < arguments.length; i++) {
-            if (arguments[i] && typeof (arguments[i] == 'function')) arguments[i]();
-        }
-    });
-}
-// Trigger Generation end
-
-// Splitting functions
-function wordsToSpan(data) {
-    if (!data || typeof (data) != 'string') return;
-    // data = data.trimStart().trimEnd();
-    data = data.replace(/ /g, '</span> <span class="imta-word">');
-    data = `<span class="imta-word">${data}</span>`;
-    return data;
+    return false;
 }
 
-function charToSpan(data) {
-    return data.replace(/\S/g, "<span class='imta-letter' style='display: inline-block; transition: all ease-in-out 0.05s'>$&</span>");
+function prepare_wordScale(htmlElement, words) {
+    if (!htmlElement || isEmpty(words)) return;
+
+    return false;
 }
-// Splitting functions end
 
 
-
-// animejs function
-function animate({
-    htmlId = null,
-    animationDuration = DURATION_REGULAT_IMTA,
-    loop = false,
-    color = null,
-    scale = SCALE_REGULAT_IMTA,
-    onComplete = null
-}) {
-    if (!htmlId) {
-        console.log('animate function | no htmlId provided');
-        return;
-    }
-    if (!scale) scale = SCALE_REGULAT_IMTA;
-    if (animationDuration > 1000) animationDuration = 1000;
-
-    console.log(scale);
-
-    anime.timeline({ loop: loop || false })
+/** ANIMATING FUNCTIONS
+ * All animating functions should --
+ *      * start with "animate_"
+ *      * should be present in animate constant with key name as the animation const value
+ */
+function animate_letterScale({ htmlElement, scale, color }) {
+    if (!htmlElement) return;
+    if (!scale) scale = DEFAULT_LETTER_SCALE;
+    anime.timeline({ loop: false })
         .add({
-            targets: `#${htmlId} .imta-word .imta-letter`,
-            scale: [1, scale, (1 - (scale - 1) / 2), 1],
-            color: color,
-            duration: animationDuration || 800,
+            targets: `#${htmlElement.id} .imta-word .imta-letter`,
+            // scale: [1, 1.5, 0.7, 1.05, 0.9, 1],
+            scale: [1, scale, (1 - (scale - 1) / 2), (1 + (scale - 1) / 4), 1],
+            color: color || null,
+            duration: 800,
             elasticity: 600,
-            translateX: [0, '25%', 0],
+            translateX: [0, '10%', 0],
             delay: (el, i) => 45 * (i + 1),
-            complete: () => { if (onComplete && typeof (onComplete == 'function')) onComplete() }
         });
 }
 
-
-// utility functions
-function isEmpty(data) {
-    if (!data) return true;
-    return data.length == 0;
+function animate_wordScale({ htmlElement, scale, color }) {
+    if (!htmlElement) return;
 }
 
+
+// SPLITTING FUNCTIONS
+// split sentences to words, words to letters, in spans
+function splitIntoWords(input, className = null) {
+    // will split into words - span with each span having classname as "imta-word"
+    if (!input || typeof (input) != 'string') return;
+
+    input = input.replace(/ /g, `</span> <span class="imta-word ${className || ''}">`);
+    input = `<span class="imta-word ${className || ''}">${input}</span>`
+
+    return input;
+}
+
+function splitIntoLetters(input, className = null) {
+    // will split into letters - span with each span having classname as "imta-letter"
+    return input.replace(/\S/g, `<span class="imta-letter ${className || ''}" style='display: inline-block; transition: all ease-in-out 0.05s'>$&</span>`);
+}
+
+
+// UTILITY FUNCTIONS
+function isEmpty(input) {
+    if (!input) return true;
+    if (typeof (input) == 'string' || Array.isArray(input)) return input?.length <= 0;
+    else if (typeof (input) == 'object') return Object.keys(input).length <= 0;
+}
