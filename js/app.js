@@ -151,7 +151,7 @@ function animate_letterScale({ htmlElement, scale, duration, color }) {
             scale: [1, scale, (1 - (scale - 1) / 2), (1 + (scale - 1) / 4), 1],
             color: color || null,
             duration: duration || 800,
-            elasticity: 600,
+            elasticity: 800,
             translateX: [0, '10%', 0],
             delay: (el, i) => 45 * (i + 1),
         });
@@ -167,7 +167,7 @@ function animate_wordScale({ htmlElement, scale, duration, color }) {
             scale: [1, scale, (1 - (scale - 1) / 2), (1 + (scale - 1) / 8), 1],
             color: color || null,
             duration: duration || 800,
-            elasticity: 600,
+            elasticity: 800,
             delay: (el, i) => 45 * (i + 1),
         });
 }
@@ -189,7 +189,7 @@ function animate_wordWiggle({ htmlElement, rotate, duration, color }) {
                 0],
             color: color || null,
             duration: duration || 800,
-            elasticity: 600,
+            elasticity: 800,
             delay: (el, i) => 45 * (i + 1),
         });
 }
