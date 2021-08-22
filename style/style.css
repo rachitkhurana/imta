@@ -47,6 +47,11 @@ h3.info:first-child {
 
 .animate-btn {
   margin-top: 24px;
+  text-align: center;
+}
+
+.animate-btn select {
+  margin-bottom: 12px;
 }
 
 .animate-btn button {

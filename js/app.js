@@ -25,7 +25,7 @@ const animate = {
 
 // SOME DEFAULTS
 const DEFAULT_LETTER_SCALE = 1.75;
-const DEFAULT_WORD_SCALE = 1.5;
+const DEFAULT_WORD_SCALE = 1.75;
 
 const DEFAULT_DURATION = 500;
 
@@ -58,7 +58,7 @@ function imta({ htmlId, words, animation, duration, extras }) {
     if (preprationSuccess) return {
         animate: () => animate[animation]({
             htmlElement: element,
-            scale: extras.scale || DEFAULT_LETTER_SCALE,
+            scale: extras.scale || null,
             color: extras.color || null
         })
     };
@@ -91,17 +91,41 @@ function prepare_letterScale(htmlElement, words) {
                 }
             }
         }
-
         return true;
     } catch (error) {
-        console.log(error);
+        console.error(error);
         return false;
     }
     return false;
 }
 
 function prepare_wordScale(htmlElement, words) {
-    if (!htmlElement || isEmpty(words)) return;
+    if (!htmlElement) return;
+    try {
+        htmlElement.innerHTML = splitIntoWords(htmlElement.textContent);
+
+        let wordElements = htmlElement.getElementsByClassName('imta-word');
+
+        if (isEmpty(words)) {
+            for (let i = 0; i < wordElements.length; i++) {
+                wordElements[i].style.display = 'inline-block';
+                wordElements[i].style.transition = 'all 0.05s ease-in-out';
+                wordElements[i].classList.add(IMTA_ANIMATION.WORD_SCALE);
+            }
+        } else {
+            for (let i = 0; i < wordElements.length; i++) {
+                if (words.includes(wordElements[i].textContent.toString().toLowerCase())) {
+                    wordElements[i].style.display = 'inline-block';
+                    wordElements[i].style.transition = 'all 0.05s ease-in-out';
+                    wordElements[i].classList.add(IMTA_ANIMATION.WORD_SCALE);
+                }
+            }
+        }
+        return true;
+    } catch (error) {
+        console.error(error);
+        return false;
+    }
 
     return false;
 }
@@ -112,7 +136,7 @@ function prepare_wordScale(htmlElement, words) {
  *      * start with "animate_"
  *      * should be present in animate constant with key name as the animation const value
  */
-function animate_letterScale({ htmlElement, scale, color }) {
+function animate_letterScale({ htmlElement, scale, duration, color }) {
     if (!htmlElement) return;
     if (!scale) scale = DEFAULT_LETTER_SCALE;
     anime.timeline({ loop: false })
@@ -121,15 +145,26 @@ function animate_letterScale({ htmlElement, scale, color }) {
             // scale: [1, 1.5, 0.7, 1.05, 0.9, 1],
             scale: [1, scale, (1 - (scale - 1) / 2), (1 + (scale - 1) / 4), 1],
             color: color || null,
-            duration: 800,
+            duration: duration || 800,
             elasticity: 600,
             translateX: [0, '10%', 0],
             delay: (el, i) => 45 * (i + 1),
         });
 }
 
-function animate_wordScale({ htmlElement, scale, color }) {
+function animate_wordScale({ htmlElement, scale, duration, color }) {
     if (!htmlElement) return;
+    if (!scale) scale = DEFAULT_WORD_SCALE;
+    anime.timeline({ loop: false })
+        .add({
+            targets: `#${htmlElement.id} .imta-word.${IMTA_ANIMATION.WORD_SCALE}`,
+            // scale: [1, scale, (1 - (scale - 1) / 2), (1 + (scale - 1) / 4), 1],
+            scale: [1, scale, (1 - (scale - 1) / 2), (1 + (scale - 1) / 8), 1],
+            color: color || null,
+            duration: duration || 800,
+            elasticity: 600,
+            delay: (el, i) => 45 * (i + 1),
+        });
 }
 
 
@@ -138,7 +173,7 @@ function animate_wordScale({ htmlElement, scale, color }) {
 function splitIntoWords(input, className = null) {
     // will split into words - span with each span having classname as "imta-word"
     if (!input || typeof (input) != 'string') return;
-
+    input = input.trim();
     input = input.replace(/ /g, `</span> <span class="imta-word ${className || ''}">`);
     input = `<span class="imta-word ${className || ''}">${input}</span>`
 

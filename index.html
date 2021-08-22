@@ -10,7 +10,7 @@
   </head>
   <body>
     <div class="root">
-      <h3 class="info">WooHoooo !</h3>
+      <h3 class="info">Without Color !</h3>
       <div id="first" class="display-divs">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
         tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
@@ -21,7 +21,7 @@
         mollit anim id est laborum.
       </div>
 
-      <h3 class="info">WooHoooo !</h3>
+      <h3 class="info">With Color !</h3>
       <div id="second" class="display-divs">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
         tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
@@ -33,36 +33,44 @@
       </div>
 
       <div class="animate-btn">
-        <button onClick="clicked()">Click to animatie</button>
+        <div>
+          <select id="animationType">
+            <option value="LETTER_SCALE">Letter Scale</option>
+            <option value="WORD_SCALE">Word Scale</option>
+          </select>
+        </div>
+        <div>
+          <button onClick="clicked()">Click to animatie</button>
+        </div>
       </div>
     </div>
     <script src="./js/anime.min.js"></script>
     <script src="./js/app.js"></script>
 
     <script>
-      let first = new imta({
-        htmlId: "first",
-        words: ["lorem", "tempor", "dolor", "anim", "commodo", "cillum"],
-        anmation: null,
-        duration: null,
-        extras: {
-          color: ["#000", "#f33"],
-        },
-      });
-
-      let second = new imta({
-        htmlId: "second",
-        words: ["exercitation", "sunt", "aute", "reprehenderit"],
-        anmation: null,
-        duration: null,
-        extras: {
-          color: ["#000", "#33f"],
-        },
-      });
+      let animationType = document.getElementById("animationType");
+      console.log(animationType);
 
       function clicked() {
-        first.animate();
-        second.animate();
+        new imta({
+          htmlId: "first",
+          words: ["lorem", "tempor", "dolor", "anim", "commodo", "cillum"],
+          animation: IMTA_ANIMATION[animationType.value],
+          duration: null,
+          extras: {
+            // color: ["#000", "#f33"],
+          },
+        }).animate();
+
+        new imta({
+          htmlId: "second",
+          words: ["exercitation", "sunt", "aute", "reprehenderit"],
+          animation: IMTA_ANIMATION[animationType.value],
+          duration: null,
+          extras: {
+            color: ["#000", "#33f"],
+          },
+        }).animate();
       }
     </script>
   </body>
