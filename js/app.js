@@ -4,14 +4,16 @@
 // ANIMATION TYPE MAP
 const IMTA_ANIMATION = {
     LETTER_SCALE: 'letter_scale',
-    WORD_SCALE: 'word_scale'
+    WORD_SCALE: 'word_scale',
+    WORD_WIGGLE: 'word_wiggle'
 }
 
 // PREPRATION FUNCTION MAP acc to animation type
 // keys should be same as the values for IMTA_ANIMATION
 const prepare = {
     'letter_scale': prepare_letterScale,
-    'word_scale': prepare_wordScale
+    'word_scale': prepare_word,
+    'word_wiggle': prepare_word
 }
 
 
@@ -19,13 +21,15 @@ const prepare = {
 // keys should be same as the values for IMTA_ANIMATION
 const animate = {
     'letter_scale': animate_letterScale,
-    'word_scale': animate_wordScale
+    'word_scale': animate_wordScale,
+    'word_wiggle': animate_wordWiggle
 }
 
 
 // SOME DEFAULTS
 const DEFAULT_LETTER_SCALE = 1.5;
 const DEFAULT_WORD_SCALE = 1.75;
+const DEFAULR_WORD_WIGGLE_ROTATION = 15;
 
 const DEFAULT_DURATION = 500;
 
@@ -52,14 +56,15 @@ function imta({ htmlId, words, animation, duration, extras }) {
     if (!element) return;
 
     // preprationSuccess true is prepration Successful.
-    const preprationSuccess = prepare[animation](element, words) || false;
+    const preprationSuccess = prepare[animation]({ htmlElement: element, words: words, className: animation }) || false;
 
     // animate the things now - if prep was success
     if (preprationSuccess) return {
         animate: () => animate[animation]({
             htmlElement: element,
             scale: extras.scale || null,
-            color: extras.color || null
+            color: extras.color || null,
+            rotate: extras.rotate || null
         })
     };
 
@@ -73,8 +78,8 @@ function imta({ htmlId, words, animation, duration, extras }) {
  *      * return true when successful else false
  *      * should be present in prepare constant with key name as the animation const value
  */
-function prepare_letterScale(htmlElement, words) {
-    if (!htmlElement) return;
+function prepare_letterScale({ htmlElement, words }) {
+    if (!htmlElement) return false;
     try {
         htmlElement.innerHTML = splitIntoWords(htmlElement.textContent);
 
@@ -99,8 +104,8 @@ function prepare_letterScale(htmlElement, words) {
     return false;
 }
 
-function prepare_wordScale(htmlElement, words) {
-    if (!htmlElement) return;
+function prepare_word({ htmlElement, words, className }) {
+    if (!htmlElement) return; false
     try {
         htmlElement.innerHTML = splitIntoWords(htmlElement.textContent);
 
@@ -110,23 +115,23 @@ function prepare_wordScale(htmlElement, words) {
             for (let i = 0; i < wordElements.length; i++) {
                 wordElements[i].style.display = 'inline-block';
                 wordElements[i].style.transition = 'all 0.05s ease-in-out';
-                wordElements[i].classList.add(IMTA_ANIMATION.WORD_SCALE);
+                wordElements[i].classList.add(className);
             }
         } else {
             for (let i = 0; i < wordElements.length; i++) {
                 if (words.includes(wordElements[i].textContent.toString().toLowerCase())) {
                     wordElements[i].style.display = 'inline-block';
                     wordElements[i].style.transition = 'all 0.05s ease-in-out';
-                    wordElements[i].classList.add(IMTA_ANIMATION.WORD_SCALE);
+                    wordElements[i].classList.add(className);
                 }
             }
         }
+        // console.log(htmlElement.innerHTML);
         return true;
     } catch (error) {
         console.error(error);
         return false;
     }
-
     return false;
 }
 
@@ -160,6 +165,28 @@ function animate_wordScale({ htmlElement, scale, duration, color }) {
             targets: `#${htmlElement.id} .imta-word.${IMTA_ANIMATION.WORD_SCALE}`,
             // scale: [1, scale, (1 - (scale - 1) / 2), (1 + (scale - 1) / 4), 1],
             scale: [1, scale, (1 - (scale - 1) / 2), (1 + (scale - 1) / 8), 1],
+            color: color || null,
+            duration: duration || 800,
+            elasticity: 600,
+            delay: (el, i) => 45 * (i + 1),
+        });
+}
+
+function animate_wordWiggle({ htmlElement, rotate, duration, color }) {
+    if (!htmlElement) return;
+    anime.timeline({ loop: false })
+        .add({
+            targets: `#${htmlElement.id} .imta-word.${IMTA_ANIMATION.WORD_WIGGLE}`,
+            // scale: [1, scale, (1 - (scale - 1) / 2), (1 + (scale - 1) / 4), 1],
+            rotate: [0,
+                DEFAULR_WORD_WIGGLE_ROTATION,
+                0,
+                -DEFAULR_WORD_WIGGLE_ROTATION,
+                0,
+                DEFAULR_WORD_WIGGLE_ROTATION,
+                0,
+                -DEFAULR_WORD_WIGGLE_ROTATION,
+                0],
             color: color || null,
             duration: duration || 800,
             elasticity: 600,
