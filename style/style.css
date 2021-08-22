@@ -76,11 +76,20 @@ h3.info:first-child {
 }
 
 @media (max-width: 767px) {
+  .root {
+    padding-top: 40px;
+    display: block;
+    font-size: 0.8em;
+  }
+
   h3.info {
-    width: 90%;
+    width: 80%;
+    margin: 0 auto;
+    margin-top: 40px;
   }
 
   .display-divs {
-    width: 90%;
+    width: 80%;
+    margin: 0 auto;
   }
 }
