@@ -24,7 +24,7 @@ const animate = {
 
 
 // SOME DEFAULTS
-const DEFAULT_LETTER_SCALE = 1.75;
+const DEFAULT_LETTER_SCALE = 1.5;
 const DEFAULT_WORD_SCALE = 1.75;
 
 const DEFAULT_DURATION = 500;
