@@ -14,14 +14,16 @@ body {
 }
 
 .root {
-  width: 100%;
-  height: 100%;
+  /* width: 100%; */
+  min-height: 100%;
   background-color: #fff;
 
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+
+  padding: 50px 24px;
 }
 
 .display-divs {

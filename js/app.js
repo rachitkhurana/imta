@@ -5,15 +5,17 @@
 const IMTA_ANIMATION = {
     LETTER_SCALE: 'letter_scale',
     WORD_SCALE: 'word_scale',
-    WORD_WIGGLE: 'word_wiggle'
+    WORD_WIGGLE: 'word_wiggle',
+    LETTER_ROTATE: 'letter_rotate'
 }
 
 // PREPRATION FUNCTION MAP acc to animation type
 // keys should be same as the values for IMTA_ANIMATION
 const prepare = {
-    'letter_scale': prepare_letterScale,
+    'letter_scale': prepare_letter,
     'word_scale': prepare_word,
-    'word_wiggle': prepare_word
+    'word_wiggle': prepare_word,
+    'letter_rotate': prepare_letter
 }
 
 
@@ -22,7 +24,8 @@ const prepare = {
 const animate = {
     'letter_scale': animate_letterScale,
     'word_scale': animate_wordScale,
-    'word_wiggle': animate_wordWiggle
+    'word_wiggle': animate_wordWiggle,
+    'letter_rotate': animate_letterRotate
 }
 
 
@@ -72,13 +75,17 @@ function imta({ htmlId, words, animation, duration, extras }) {
 }
 
 
+
+
+
+
 /** PREPARING FUNCTIONS
  * All preparing functions should --
  *      * start with "prepare_"
  *      * return true when successful else false
  *      * should be present in prepare constant with key name as the animation const value
  */
-function prepare_letterScale({ htmlElement, words }) {
+function prepare_letter({ htmlElement, words }) {
     if (!htmlElement) return false;
     try {
         htmlElement.innerHTML = splitIntoWords(htmlElement.textContent);
@@ -134,6 +141,10 @@ function prepare_word({ htmlElement, words, className }) {
     }
     return false;
 }
+
+
+
+
 
 
 /** ANIMATING FUNCTIONS
@@ -193,6 +204,26 @@ function animate_wordWiggle({ htmlElement, rotate, duration, color }) {
             delay: (el, i) => 45 * (i + 1),
         });
 }
+
+function animate_letterRotate({ htmlElement, scale, duration, color }) {
+    if (!htmlElement) return;
+    if (!scale) scale = DEFAULT_LETTER_SCALE;
+    anime.timeline({ loop: false })
+        .add({
+            targets: `#${htmlElement.id} .imta-word .imta-letter`,
+            // scale: [1, 1.5, 0.7, 1.05, 0.9, 1],
+            rotate: [0, 360],
+            color: color || null,
+            duration: duration || 800,
+            elasticity: 800,
+            delay: (el, i) => 45 * (i + 1),
+        });
+}
+
+
+
+
+
 
 
 // SPLITTING FUNCTIONS
